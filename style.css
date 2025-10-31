@@ -1,0 +1,143 @@
+/* --- Import the terminal font --- */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+
+/* --- Main Overlay --- */
+#terminal-view-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000000;
+  z-index: 2147483647; /* Max z-index */
+  overflow-y: scroll;
+  padding: 3rem 2rem;
+  box-sizing: border-box;
+  color: #00AA00; /* Soft Terminal Green */
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* --- Content Wrapper --- */
+.terminal-content {
+  max-width: 750px;
+  margin: 0 auto;
+  padding-bottom: 10rem;
+}
+
+/* --- Exit Button --- */
+#terminal-exit-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #888888; /* Dark Gray */
+  color: #000000;
+  border: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  text-shadow: none;
+  z-index: 10;
+}
+#terminal-exit-btn:hover {
+  background: #BDBDBD; /* Light Gray */
+}
+
+/* --- Title --- */
+.terminal-content h1 {
+  font-size: 2rem;
+  color: #00AA00; /* Soft Green */
+  text-shadow: none;
+  margin-bottom: 1rem;
+}
+
+/* --- Author/Byline --- */
+.terminal-content .byline {
+  color: #888888; /* Dark Gray */
+  font-size: 1rem;
+  text-shadow: none;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* --- Subheadings --- */
+.terminal-content h2,
+.terminal-content h3,
+.terminal-content h4 {
+  color: #BDBDBD; /* Light Gray (was white) */
+  text-shadow: none;
+  font-size: 1.5rem;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+}
+
+/* --- Paragraphs --- */
+.terminal-content p {
+  margin-bottom: 1.2em;
+}
+
+/* --- Links --- */
+.terminal-content a {
+  color: #CC9900; /* Soft Amber */
+  text-shadow: none;
+  text-decoration: underline;
+}
+
+/* --- Images --- */
+.terminal-content img {
+  filter: grayscale(100%);
+  border: 1px solid #888888; /* Dark Gray Border */
+  box-shadow: none; /* No glow */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 2em 0;
+}
+
+/* --- Other Elements --- */
+.terminal-content ul,
+.terminal-content ol {
+  margin-left: 2em;
+  margin-bottom: 1.5em;
+}
+
+.terminal-content blockquote {
+  border-left: 2px solid #888888;
+  padding-left: 1.5em;
+  margin: 1.5em 0;
+  color: #888888; /* Dark Gray */
+  font-style: italic;
+  text-shadow: none;
+}
+
+.terminal-content pre {
+  background: #1a1a1a;
+  border: 1px dashed #888888;
+  padding: 1em;
+  overflow-x: auto;
+  font-size: 0.9em;
+}
+
+/* --- Blinking Cursor --- */
+.terminal-cursor {
+  display: inline-block;
+  background: #BDBDBD; /* Light Gray */
+  width: 0.7ch;
+  height: 1.2rem;
+  margin-left: 4px;
+  box-shadow: none; /* No glow */
+  animation: blink 1s step-end infinite;
+  transform: translateY(3px);
+}
+
+@keyframes blink {
+  from, to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
