@@ -13,7 +13,13 @@
   function findArticleContainer() {
     
     // --- STAGE 1: Try specific, high-confidence selectors first ---
+    // --- RE-ORDERED ---
+    // Prioritize broad containers like 'article' FIRST. This helps
+    // grab the parent of paginated content (Ars Technica) before
+    // grabbing a child class like '.post-content' on page 1.
     const specificSelectors = [
+      'article',              // Generic HTML5 tag
+      '.article-content',    // Ars Technica
       '#storytext',          // NPR
       '.storytext',          // NPR
       'article.story',       // Other news sites
@@ -22,8 +28,7 @@
       '.article-body',       // Common class
       '#main-content',       // Common accessibility ID
       '#article-body',       // Common ID
-      '[role="main"]',       // Accessibility role
-      'article'              // Generic HTML5 tag
+      '[role="main"]'        // Accessibility role
     ];
 
     for (const selector of specificSelectors) {
@@ -157,7 +162,18 @@
   // We only want specific elements. Query for them.
   const contentNodes = articleBody.querySelectorAll('p, h2, h3, h4, img, pre, ul, ol, blockquote');
   
-  contentNodes.forEach(node => {
+  contentNodes.forEach(node => { // 'node' is the ORIGINAL, live element
+
+    // --- NEW "SMART" VISIBILITY CHECK (v2) ---
+    // This fixes The Verge regression.
+    // .closest() checks the node *and its parents* for a match.
+    // This finds junk text where the hidden class is on a parent.
+    const junkSelectors = '.sr-only, .visually-hidden, .screen-reader-text, [aria-hidden="true"], .ad, .advertisement, footer, .footer, .comments, #comments, .related-posts, .author-bio, .social-links';
+    if (node.closest(junkSelectors)) {
+      return; // Skip this node
+    }
+    // --- END NEW CHECK ---
+    
     const clonedNode = node.cloneNode(true);
     
     if (clonedNode.tagName) {
@@ -167,14 +183,34 @@
         clonedNode.textContent = `-> ${clonedNode.textContent}`;
       }
       
+      // --- NEW LINK FORMATTING ---
       if (tagName === 'a') {
         clonedNode.textContent = `[${clonedNode.textContent}]`;
+        clonedNode.setAttribute('title', clonedNode.href); // Add href for hover
       }
       
-      // Sanitize links inside other elements (like <p>)
+      // --- NEW LINK FORMATTING (inside other elements) ---
       clonedNode.querySelectorAll('a').forEach(a => {
-         a.textContent = `[${a.textContent}] (${a.href})`;
+         a.textContent = `[${a.textContent}]`;
+         a.setAttribute('title', a.href); // Add href for hover
       });
+
+      // --- IMAGE HANDLING ---
+      if (tagName === 'img') {
+        
+        // --- We KEEP the image size check ---
+        // We also check the parent here for ad-related containers
+        if (!node.getAttribute('src') || node.naturalWidth < 100 || node.naturalHeight < 100 || node.offsetWidth < 50 || node.closest('.ad, .advertisement')) {
+          return; // It's a tracking pixel, icon, or tiny spacer. Skip it.
+        }
+        // --- END IMAGE CHECK ---
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'terminal-image-wrapper';
+        imgWrapper.appendChild(clonedNode);
+        contentWrapper.appendChild(imgWrapper);
+        return; // Skip appending clonedNode directly
+      }
     }
 
     contentWrapper.appendChild(clonedNode);
@@ -194,3 +230,5 @@
   document.body.style.overflow = 'hidden';
 
 })();
+
+

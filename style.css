@@ -19,8 +19,19 @@
   line-height: 1.6;
 }
 
+/* * --- THE RESET FIX ---
+ * Force all elements inside the overlay to inherit the overlay's 
+ * base color. This resets any styles from the original site.
+*/
+#terminal-view-overlay * {
+  color: inherit;
+  background: none;
+  border-style: none;
+  /* We do NOT reset display here, we do it on specific tags */
+}
+
 /* --- Content Wrapper --- */
-.terminal-content {
+#terminal-view-overlay .terminal-content {
   max-width: 750px;
   margin: 0 auto;
   padding-bottom: 10rem;
@@ -46,7 +57,8 @@
 }
 
 /* --- Title --- */
-.terminal-content h1 {
+#terminal-view-overlay .terminal-content h1 {
+  display: block; /* Force visible */
   font-size: 2rem;
   color: #00AA00; /* Soft Green */
   text-shadow: none;
@@ -54,7 +66,8 @@
 }
 
 /* --- Author/Byline --- */
-.terminal-content .byline {
+#terminal-view-overlay .terminal-content .byline {
+  display: block; /* Force visible */
   color: #888888; /* Dark Gray */
   font-size: 1rem;
   text-shadow: none;
@@ -63,9 +76,10 @@
 }
 
 /* --- Subheadings --- */
-.terminal-content h2,
-.terminal-content h3,
-.terminal-content h4 {
+#terminal-view-overlay .terminal-content h2,
+#terminal-view-overlay .terminal-content h3,
+#terminal-view-overlay .terminal-content h4 {
+  display: block; /* Force visible */
   color: #BDBDBD; /* Light Gray (was white) */
   text-shadow: none;
   font-size: 1.5rem;
@@ -75,36 +89,72 @@
 }
 
 /* --- Paragraphs --- */
-.terminal-content p {
+#terminal-view-overlay .terminal-content p {
+  display: block; /* Force visible */
   margin-bottom: 1.2em;
 }
 
 /* --- Links --- */
-.terminal-content a {
+#terminal-view-overlay .terminal-content a {
   color: #CC9900; /* Soft Amber */
   text-shadow: none;
   text-decoration: underline;
 }
 
-/* --- Images --- */
-.terminal-content img {
-  filter: grayscale(100%);
-  border: 1px solid #888888; /* Dark Gray Border */
-  box-shadow: none; /* No glow */
-  max-width: 100%;
-  height: auto;
-  display: block;
+/* --- Images and their new wrapper --- */
+#terminal-view-overlay .terminal-image-wrapper {
+  position: relative;
+  display: block; /* Force visible */
   margin: 2em 0;
+  border: 1px solid #888888; /* Dark Gray Border */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 170, 0, 0.05) 0px,
+    rgba(0, 170, 0, 0.05) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  background-size: 100% 4px;
+  overflow: hidden;
 }
 
+#terminal-view-overlay .terminal-image-wrapper img {
+  display: block;
+  filter: grayscale(100%);
+  max-width: 100%;
+  height: auto;
+}
+
+#terminal-view-overlay .terminal-image-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 170, 0, 0.3); /* Semi-transparent green overlay */
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+
 /* --- Other Elements --- */
-.terminal-content ul,
-.terminal-content ol {
+#terminal-view-overlay .terminal-content ul,
+#terminal-view-overlay .terminal-content ol {
+  display: block; /* Force visible */
   margin-left: 2em;
   margin-bottom: 1.5em;
 }
 
-.terminal-content blockquote {
+/* Handle list items specifically */
+#terminal-view-overlay .terminal-content li {
+  display: list-item;
+  list-style-type: disc; /* Or whatever you prefer */
+}
+
+#terminal-view-overlay .terminal-content blockquote {
+  display: block; /* Force visible */
   border-left: 2px solid #888888;
   padding-left: 1.5em;
   margin: 1.5em 0;
@@ -113,7 +163,8 @@
   text-shadow: none;
 }
 
-.terminal-content pre {
+#terminal-view-overlay .terminal-content pre {
+  display: block; /* Force visible */
   background: #1a1a1a;
   border: 1px dashed #888888;
   padding: 1em;
@@ -122,13 +173,13 @@
 }
 
 /* --- Blinking Cursor --- */
-.terminal-cursor {
+#terminal-view-overlay .terminal-cursor {
   display: inline-block;
   background: #BDBDBD; /* Light Gray */
   width: 0.7ch;
   height: 1.2rem;
   margin-left: 4px;
-  box-shadow: none; /* No glow */
+  box-shadow: none;
   animation: blink 1s step-end infinite;
   transform: translateY(3px);
 }
